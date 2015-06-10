@@ -358,6 +358,7 @@
   MdeModulePkg/Universal/EsrtDxe/EsrtDxe.inf
   
   MdeModulePkg/Universal/PropertiesTableAttributesDxe/PropertiesTableAttributesDxe.inf
+  MdeModulePkg/Library/SmartCardReader/SmartCardReader.inf
 
 [Components.IA32, Components.X64, Components.IPF]  
   MdeModulePkg/Universal/Network/UefiPxeBcDxe/UefiPxeBcDxe.inf
