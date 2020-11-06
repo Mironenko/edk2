@@ -35,6 +35,7 @@ POSSIBILITY OF SUCH DAMAGE.
 **/
 
 #include <Library/PrintLib.h>
+#include <Library/BaseLib.h>
 #include <Protocol/SmartCardReader.h>
 
 #include "CcidDriver.h"
@@ -374,8 +375,8 @@ InitializeUsbCcidDevice (
       continue;
     }
 
-    StrCpy(UsbCcidDevice->ReaderName, ManufacturerString);
-    StrCat(UsbCcidDevice->ReaderName, L" ");
+    StrCpyS(UsbCcidDevice->ReaderName, sizeof(UsbCcidDevice->ReaderName), ManufacturerString);
+    StrCatS(UsbCcidDevice->ReaderName, sizeof(UsbCcidDevice->ReaderName), L" ");
 
     FreePool(ManufacturerString);
     break;
@@ -393,7 +394,7 @@ InitializeUsbCcidDevice (
       continue;
     }
 
-    StrCat(UsbCcidDevice->ReaderName, ProductString);
+    StrCatS(UsbCcidDevice->ReaderName, sizeof(UsbCcidDevice->ReaderName), ProductString);
 
     FreePool(ProductString);
     break;
@@ -411,7 +412,7 @@ error:
 
   /* Add the Lun */
   UnicodeSPrint(TxtLun, sizeof(TxtLun)/sizeof(TxtLun[0]), L" %d", UsbCcidDevice->Lun);
-  StrCat(UsbCcidDevice->ReaderName, TxtLun);
+  StrCatS(UsbCcidDevice->ReaderName, sizeof(UsbCcidDevice->ReaderName), TxtLun);
 
   /* Length (in bytes) including Null terminator */
   UsbCcidDevice->ReaderNameLength = StrSize(UsbCcidDevice->ReaderName);
@@ -496,7 +497,6 @@ SmartCardReaderDriverBindingStart (
     .SCardGetAttrib = SCardGetAttrib
   };
   INTN slot, reader_index;
-  CcidDesc *ccid_slot;
   _ccid_descriptor *ccid_descriptor;
   USB_CCID_DEV *previous_UsbCcidDevice;
 
@@ -566,7 +566,7 @@ SmartCardReaderDriverBindingStart (
 
   /* multi slot readers */
   reader_index = LunToReaderIndex(UsbCcidDevice->Lun);
-  ccid_slot = get_ccid_slot(reader_index);
+  (void)get_ccid_slot(reader_index);
   ccid_descriptor = get_ccid_descriptor(reader_index);
   previous_UsbCcidDevice = UsbCcidDevice;
 
@@ -595,7 +595,7 @@ SmartCardReaderDriverBindingStart (
 
     /* Add the slot number */
     UnicodeSPrint(TxtSlot, sizeof(TxtSlot)/sizeof(TxtSlot[0]), L", %d", slot);
-    StrCat(new_UsbCcidDevice->ReaderName, TxtSlot);
+    StrCatS(new_UsbCcidDevice->ReaderName, sizeof(new_UsbCcidDevice->ReaderName), TxtSlot);
 
     /* Set the reader name to the lower level */
     new_reader_index = LunToReaderIndex(new_UsbCcidDevice->Lun);

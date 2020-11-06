@@ -255,6 +255,8 @@ whichever location your reader resides.
 #ifndef _ifd_handler_h_
 #define _ifd_handler_h_
 
+#include "misc.h"
+
 #include <wintypes.h>
 #define MAX_ATR_SIZE 33 /* from pcsclite.h */
 
@@ -487,7 +489,7 @@ port used by each reader.
 @retval IFD_COMMUNICATION_ERROR Error has occurred (\ref IFD_COMMUNICATION_ERROR)
 @retval IFD_NO_SUCH_DEVICE The reader is no more present (\ref IFD_NO_SUCH_DEVICE)
   */
-RESPONSECODE IFDHCreateChannelByName(DWORD Lun, LPSTR DeviceName);
+EXTERNAL RESPONSECODE IFDHCreateChannelByName(DWORD Lun, LPSTR DeviceName);
 
 /**
 This function performs a data exchange with the reader (not the card)
@@ -520,7 +522,7 @@ you want extended functionality.
 @retval IFD_RESPONSE_TIMEOUT The response timed out (\ref IFD_RESPONSE_TIMEOUT)
 @retval IFD_NO_SUCH_DEVICE The reader is no more present (\ref IFD_NO_SUCH_DEVICE)
  */
-RESPONSECODE IFDHControl(DWORD Lun, DWORD dwControlCode, PUCHAR
+EXTERNAL RESPONSECODE IFDHControl(DWORD Lun, DWORD dwControlCode, PUCHAR
 	TxBuffer, DWORD TxLength, PUCHAR RxBuffer, DWORD RxLength,
 	LPDWORD pdwBytesReturned);
 
@@ -532,7 +534,7 @@ RESPONSECODE IFDHControl(DWORD Lun, DWORD dwControlCode, PUCHAR
  * @deprecated
  * You should use the new form of IFDHControl()
  */
-RESPONSECODE IFDHControl(DWORD Lun, PUCHAR TxBuffer, DWORD TxLength,
+EXTERNAL RESPONSECODE IFDHControl(DWORD Lun, PUCHAR TxBuffer, DWORD TxLength,
 	PUCHAR RxBuffer, PDWORD RxLength);
 
 #endif
@@ -581,7 +583,7 @@ for the particular reader by manufacturer and product id.
 @retval IFD_NO_SUCH_DEVICE The reader is no more present (\ref IFD_NO_SUCH_DEVICE)
 
  */
-RESPONSECODE IFDHCreateChannel(DWORD Lun, DWORD Channel);
+EXTERNAL RESPONSECODE IFDHCreateChannel(DWORD Lun, DWORD Channel);
 
 /**
 This function should close the reader communication channel for the
@@ -597,7 +599,7 @@ powered down.
 @retval IFD_COMMUNICATION_ERROR Error has occurred (\ref IFD_COMMUNICATION_ERROR)
 @retval IFD_NO_SUCH_DEVICE The reader is no more present (\ref IFD_NO_SUCH_DEVICE)
   */
-RESPONSECODE IFDHCloseChannel(DWORD Lun);
+EXTERNAL RESPONSECODE IFDHCloseChannel(DWORD Lun);
 
 /**
 This function should get the slot/card capabilities for a particular
@@ -637,7 +639,7 @@ don't mind loading a new driver for each reader then ignore Lun.
   If the driver provides a polling thread then @p Value is a pointer to
   this function. The function prototype is:
 @verbatim
-  RESPONSECODE foo(DWORD Lun, int timeout);
+  EXTERNAL RESPONSECODE foo(DWORD Lun, int timeout);
 @endverbatim
 - \ref TAG_IFD_POLLING_THREAD_KILLABLE
   Tell if the polling thread can be killed (pthread_kill()) by pcscd
@@ -646,7 +648,7 @@ don't mind loading a new driver for each reader then ignore Lun.
   thread returned by \ref TAG_IFD_POLLING_THREAD_WITH_TIMEOUT. The
   function prototype is:
 @verbatim
-  RESPONSECODE foo(DWORD Lun);
+  EXTERNAL RESPONSECODE foo(DWORD Lun);
 @endverbatim
 @param[in,out] Length Length of the desired data value
 @param[out] Value Value of the desired data
@@ -656,7 +658,7 @@ don't mind loading a new driver for each reader then ignore Lun.
 @retval IFD_ERROR_TAG Invalid tag given (\ref IFD_ERROR_TAG)
 @retval IFD_NO_SUCH_DEVICE The reader is no more present (\ref IFD_NO_SUCH_DEVICE)
  */
-RESPONSECODE IFDHGetCapabilities(DWORD Lun, DWORD Tag, PDWORD Length,
+EXTERNAL RESPONSECODE IFDHGetCapabilities(DWORD Lun, DWORD Tag, PDWORD Length,
 	PUCHAR Value);
 
 /**
@@ -680,7 +682,7 @@ SCardGetAttrib() function. The list of supported tags is not limited.
 @retval IFD_ERROR_VALUE_READ_ONLY Trying to set read only value (\ref IFD_ERROR_VALUE_READ_ONLY)
 @retval IFD_NO_SUCH_DEVICE The reader is no more present (\ref IFD_NO_SUCH_DEVICE)
  */
-RESPONSECODE IFDHSetCapabilities(DWORD Lun, DWORD Tag, DWORD Length, PUCHAR Value);
+EXTERNAL RESPONSECODE IFDHSetCapabilities(DWORD Lun, DWORD Tag, DWORD Length, PUCHAR Value);
 
 /**
 This function should set the Protocol Type Selection (PTS) of a
@@ -711,7 +713,7 @@ to negotiate
 @retval IFD_NOT_SUPPORTED Action not supported (\ref IFD_NOT_SUPPORTED)
 @retval IFD_NO_SUCH_DEVICE The reader is no more present (\ref IFD_NO_SUCH_DEVICE)
  */
-RESPONSECODE IFDHSetProtocolParameters(DWORD Lun, DWORD Protocol, UCHAR Flags,
+EXTERNAL RESPONSECODE IFDHSetProtocolParameters(DWORD Lun, DWORD Protocol, UCHAR Flags,
 	UCHAR PTS1, UCHAR PTS2, UCHAR PTS3);
 /**
 This function controls the power and reset signals of the smart card
@@ -745,7 +747,7 @@ return zero for the AtrLength and return \ref IFD_ERROR_POWER_ACTION.
 @retval IFD_NOT_SUPPORTED Action not supported (\ref IFD_NOT_SUPPORTED)
 @retval IFD_NO_SUCH_DEVICE The reader is no more present (\ref IFD_NO_SUCH_DEVICE)
  */
-RESPONSECODE IFDHPowerICC(DWORD Lun, DWORD Action, PUCHAR Atr, PDWORD
+EXTERNAL RESPONSECODE IFDHPowerICC(DWORD Lun, DWORD Action, PUCHAR Atr, PDWORD
 	AtrLength);
 
 /**
@@ -799,7 +801,7 @@ command for received buffers containing 61 XX.
 @retval IFD_NOT_SUPPORTED Action not supported (\ref IFD_NOT_SUPPORTED)
 @retval IFD_NO_SUCH_DEVICE The reader is no more present (\ref IFD_NO_SUCH_DEVICE)
  */
-RESPONSECODE IFDHTransmitToICC(DWORD Lun, SCARD_IO_HEADER SendPci,
+EXTERNAL RESPONSECODE IFDHTransmitToICC(DWORD Lun, SCARD_IO_HEADER SendPci,
 	PUCHAR TxBuffer, DWORD TxLength, PUCHAR RxBuffer, PDWORD
 	RxLength, PSCARD_IO_HEADER RecvPci);
 
@@ -819,7 +821,7 @@ command each time this function is called.
 @retval IFD_ICC_NOT_PRESENT ICC is not present (\ref IFD_ICC_NOT_PRESENT)
 @retval IFD_NO_SUCH_DEVICE The reader is no more present (\ref IFD_NO_SUCH_DEVICE)
  */
-RESPONSECODE IFDHICCPresence(DWORD Lun);
+EXTERNAL RESPONSECODE IFDHICCPresence(DWORD Lun);
 
 void SetReaderName(DWORD Lun, CHAR16 *ReaderName);
 #endif
