@@ -1093,6 +1093,14 @@ RESPONSECODE CmdPowerOff(unsigned int reader_index)
  ****************************************************************************/
 RESPONSECODE CmdGetSlotStatus(unsigned int reader_index, unsigned char buffer[])
 {
+	unsigned char txBuffer[] = {0x00, 0xCA, 0x01, 0x81, 0x08};
+
+	unsigned char rxBuffer[511];
+	unsigned int rx_length = sizeof(rxBuffer);
+
+	CmdXfrBlock(reader_index, sizeof(txBuffer), txBuffer, &rx_length,
+	            rxBuffer, T_0);
+
 	unsigned char cmd[10];
 	status_t res;
 	unsigned int length;
