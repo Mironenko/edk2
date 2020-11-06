@@ -286,6 +286,15 @@ status_t OpenUEFIByName(unsigned int reader_index, /*@null@*/ char *device)
 } /* OpenUEFIByName */
 
 
+void LogBuffer(short unsigned int* label, unsigned char *buffer, unsigned int length) {
+	unsigned int i = 0;
+	Print(L"BEGIN:"); Print(label); Print(L"\n");
+	for (i = 0; i < length; ++i) {
+		Print(L"%02x ", buffer[i]);
+	}
+	Print(L"\nEND:"); Print(label); Print(L"\n");
+}
+
 /*****************************************************************************
  *
  *					WriteUEFI
@@ -299,7 +308,7 @@ status_t WriteUEFI(unsigned int reader_index, unsigned int length,
 	EFI_USB_IO_PROTOCOL *UsbIo = usbDevice[reader_index].UsbIo;
 	UINTN DataLength;
 
-	DEBUG_XXD(">", buffer, length);
+	LogBuffer(L">", buffer, length);
 
 	DataLength = length;
 	Status = UsbIo->UsbBulkTransfer(UsbIo,
@@ -347,7 +356,7 @@ read_again:
 
 	*length = DataLength;
 
-	DEBUG_XXD("<", buffer, *length);
+	LogBuffer(L"<", buffer, *length);
 
 #define BSEQ_OFFSET 6
 	if ((*length >= BSEQ_OFFSET)
